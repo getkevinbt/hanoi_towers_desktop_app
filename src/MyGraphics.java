@@ -22,8 +22,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-
-public class MyGraphics extends JFrame{
+/**
+ * MyGraphics is responsible for rendering the GUI application for
+ * the Towers of Hanoi game. It manages different screen states
+ * (start, difficulty selection, game, and win) and handles user interactions.
+ */
+public class MyGraphics extends JFrame {
 	private JPanel mainPanel;
 	private int elapsedSeconds, difficulty, moveCount = 0, screen;
 	private final Disk[] inferiorDisk = new Disk[7];
@@ -43,9 +47,12 @@ public class MyGraphics extends JFrame{
     private JLabel movesLabel;
 	public static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
-	public MyGraphics(){
+    /**
+     * Constructor. Initializes the application window and sets up the initial UI state.
+     */
+    public MyGraphics() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setUndecorated(true); // Removes title bar
+        setUndecorated(true);
 		SwingUtilities.invokeLater(this::setFullScreen);
 
 		mainPanel = new JPanel();
@@ -55,21 +62,22 @@ public class MyGraphics extends JFrame{
 		mainPanel.setBounds(0, 0, this.getPreferredSize().width, this.getPreferredSize().height);
 
 		displayStartScreen();
-		// displayDifficultySelectionScreen();
-		// displayGameScreen(1);
-		// displayWinScreen();
-
 		add(mainPanel);
-
 		setVisible(true);
 	}
 
+    /**
+     * Sets the window to fullscreen mode.
+     */
 	private void setFullScreen() {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         gd.setFullScreenWindow(this);
     }
 
-	private void paintCloseBtn(){
+    /**
+     * Adds a close button to the UI, which exits the application on click.
+     */
+    private void paintCloseBtn() {
 		RoundedBtn closeBtn = new RoundedBtn("", 32, 32, 16, new Color(247, 87, 87), Color.BLACK);
 		closeBtn.setIcon(new ImageIcon(getClass().getResource("../assets/close_24px.png")));
         closeBtn.setMargin(new Insets(2, 5, 2, 5));
@@ -79,14 +87,15 @@ public class MyGraphics extends JFrame{
         mainPanel.add(closeBtn);
 	}
 
-	private void paintBackBtn(){
+    /**
+     * Adds a back button to the UI, which navigates to the previous screen state.
+     */
+    private void paintBackBtn() {
 		RoundedBtn backBtn = new RoundedBtn("", 32, 32, 16, new Color(143, 207, 153), Color.BLACK);
 		backBtn.setIcon(new ImageIcon(getClass().getResource("../assets/arrow_back_24px.png")));
 		backBtn.setMargin(new Insets(2, 5, 2, 5));
 		backBtn.addActionListener(_ -> {
-            if (screen == 1){
-				displayStartScreen();
-			}else if (screen == 2){
+            if (screen == 2) {
 				stopTimer();
 				moveCount = 0;
 				elapsedSeconds = 0;
@@ -102,7 +111,10 @@ public class MyGraphics extends JFrame{
 		mainPanel.add(backBtn);
 	}
 
-	private void paintTopPanel(){
+    /**
+     * Adds the top panel containing the timer and move count.
+     */
+    private void paintTopPanel() {
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(null);
 		topPanel.setOpaque(false);
@@ -130,24 +142,34 @@ public class MyGraphics extends JFrame{
         mainPanel.add(topPanel);
 	}
 
-	public void removeGameComponents(){
-		for (int i = 0; i < 3; i++)	mainPanel.remove(towers[i]);
+    /**
+     * Removes game components from the main panel, preparing for a screen refresh.
+     */
+    public void removeGameComponents() {
+        for (int i = 0; i < 3; i++) mainPanel.remove(towers[i]);
 		for (int i = 0; i < disks.size(); i++) mainPanel.remove(disks.get(i));
 	}
 
-	public void repaintScreen(Disk draggedDisk){
+    /**
+     * Repaints the screen to reflect changed game state.
+     * @param draggedDisk the disk currently being dragged by the mouse
+     */
+    public void repaintScreen(Disk draggedDisk) {
 		removeGameComponents();
 		if (draggedDisk != null) mainPanel.add(draggedDisk);
 
-		for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
 			mainPanel.add(towers[i]);
 		}
-		for (int i = disks.size() - 1; 0 <= i; i--){
+        for (int i = disks.size() - 1; 0 <= i; i--) {
 			if (draggedDisk != null && i == disks.indexOf(draggedDisk)) continue;
 			mainPanel.add(disks.get(i));
 		}
 	}
 
+    /**
+     * Displays the start screen.
+     */
 	private void displayStartScreen() {
 		screen = 0;
 		mainPanel.removeAll();
