@@ -61,7 +61,7 @@ public class TowerGame extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new HanoiGame());
+        SwingUtilities.invokeLater(() -> new TowerGame());
     }
 }
 
